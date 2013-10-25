@@ -72,12 +72,14 @@
         Project.prototype.$schema = projectSchema;
 
         var RRM = function() {
+            var self = this;
+
             var defineProperty = function(entity, name, property, data) {
                 if (!('transform' in property)) {
                     throw Error('transform is mandatory');
                 }
-                var value = property.transform(data);
-                entity.$values[name] = value;
+
+                self.loadPropertyValue(entity, name, property, data);
 
                 var definition = {};
                 if ('get' in property) {
@@ -94,6 +96,11 @@
 
                 Object.defineProperty(entity, name, definition);
             };
+
+            this.loadPropertyValue = function(entity, name, property, data) {
+                var value = property.transform(data);
+                entity.$values[name] = value;
+            }
 
             this.create = function(entityClass, data) {
                 var entity = new entityClass;
@@ -119,12 +126,73 @@
                 entity.$dirty = false;
 
                 console.log(data);
+
+                repo.update(entity, data);
             };
         }
 
         var rrm = new RRM;
 
-        var project = rrm.create(Project, { id: 1, name: 'Project', description: 'This is the description', created_at: '2010-05-16T00:00:00Z' });
+        var ResourceArray = function( repository ) {
+            this.filter = function(){}
+            this.get = function(){}
+        }
+
+        var ProjectRepository = function(rrm) {
+            var instancesById = {};
+            var instances = [];
+
+            this.addToIdentityMap = function(entity) {
+                if (entity.id !== undefined) {
+                    if (entity.id in instancesById) {
+                        throw Error('Entity was already loaded');
+                    }
+                    instancesById[entity.id] = entity;
+                }
+
+                if (instances.indexOf(entity) !== -1) {
+                    return;
+                }
+
+                instances.push(entity);
+            }
+
+            this.removeFromIdentityMap = function(entity) {
+                var index = instances.indexOf(entity);
+                if (-1 === index) {
+                    return;
+                }
+                instances.splice(index, 1);
+                if (entity.id !== undefined) {
+                    delete instancesById[entity.id];
+                }
+            }
+
+            this.update = function(entity, data) {
+                for (var i in entity.$values) {
+                    delete entity.$values[i];
+                }
+
+                for (var i in entity.$schema) {
+                    rrm.loadPropertyValue(entity, i, entity.$schema[i], data);
+                }
+            }
+            this.initialize = function(data) {
+                var entity = rrm.create(Project, data);
+
+                try {
+                    this.addToIdentityMap(entity);
+                } catch (e) {
+                    this.update(instancesById[entity.id], data);
+                    entity = instancesById[entity.id];
+                }
+
+                return entity;
+            }
+        }
+
+        var repo = new ProjectRepository(rrm);
+        var project = repo.initialize({ name: 'Project', description: 'This is the description', created_at: '2010-05-16T00:00:00Z' });
 
         console.log("id: " + project.id + ", name: " + project.name + ', description: '+ project.description +', age:' + project.age);
         console.log(project.$dirty);
@@ -138,6 +206,10 @@
         console.log(project.$dirty);
         rrm.save(project);
         console.log(project.$dirty);
+
+        repo.update(project, { id: 1, name: 'blep', description: 'herp', created_at: '2010-05-16T00:00:00Z' });
+
+        console.log("id: " + project.id + ", name: " + project.name + ', description: '+ project.description +', age:' + project.age);
     </script>
 </head>
 <body>
