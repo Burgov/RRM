@@ -69,7 +69,7 @@
 
         var Project = function() {}
         Project.prototype = Entity.prototype;
-
+        Project.prototype.$schema = projectSchema;
 
         var RRM = function() {
             var defineProperty = function(entity, name, property, data) {
@@ -98,8 +98,8 @@
             this.create = function(entityClass, data) {
                 var entity = new entityClass;
 
-                for (var i in projectSchema) {
-                    defineProperty(entity, i, projectSchema[i], data);
+                for (var i in entity.$schema) {
+                    defineProperty(entity, i, entity.$schema[i], data);
                 }
 
                 return entity;
@@ -108,8 +108,8 @@
             this.save = function(entity) {
                 var data = {};
 
-                for (var i in projectSchema) {
-                    var property = projectSchema[i];
+                for (var i in entity.$schema) {
+                    var property = entity.$schema[i];
                     if (!('reverseTransform' in property)) {
                         continue;
                     }
