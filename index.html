@@ -24,7 +24,7 @@
             }
             this.age = {
                 get: function() {
-                    return this.$values.id;
+                    return this.$values.age;
                 },
                 transform: function(json) {
                     var date = new Date(json.created_at);
@@ -51,35 +51,48 @@
                 }
             }
         };
+        var projectSchema = new ProjectSchema();
 
         var Project = function() {}
         Project.prototype = Entity.prototype;
-        Object.defineProperty(Project.prototype, 'id', {
-            get: function() {
-                return this.$values.id;
+
+        var RRM = function() {
+
+            this.create = function(entityClass, data) {
+                var entity = new entityClass;
+
+                for (var i in projectSchema) {
+                    var property = projectSchema[i];
+                    if (!('transform' in property)) {
+                        throw Error('transform is mandatory');
+                    }
+                    var value = property.transform(data);
+                    entity.$values[i] = value;
+
+                    var definition = {};
+                    if ('get' in property) {
+                        definition.get = function() {
+                            return property['get'].apply(entity);
+                        }
+                    }
+                    if ('set' in property) {
+                        definition.set = function(value) {
+                            return property['set'].apply(entity, value);
+                        }
+                    }
+
+                    Object.defineProperty(entity, i, definition);
+                }
+
+                return entity;
             }
-        });
-        Object.defineProperty(Project.prototype, 'name', {
-            set: function(value) {
-                this.$dirty = true;
-                this.$values.name = value;
-            },
-            get: function() {
-                return this.$values.name;
-            }
-        });
+        }
 
+        var rrm = new RRM;
 
+        var project = rrm.create(Project, { id: 1, name: 'Pfdsaroject', created_at: '2010-05-16T00:00:00Z' });
 
-        var project = new Project();
-        project.$values.id = 1;
-        project.$values.name = 'derp';
-        try {
-            project.id = 2;
-        } catch (e) {};
-        console.log(project.id, project.$dirty);
-        project.name = 'test';
-        console.log(project.name, project.$dirty);
+        document.write("id: " + project.id + ", name: " + project.name + ', age:' + project.age);
     </script>
 </head>
 <body>
