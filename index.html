@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script>
+        "use strict";
+        var Entity = function() {}
+        Object.defineProperty(Entity.prototype, '$values', {
+            value: {}
+        });
+        Object.defineProperty(Entity.prototype, '$dirty', {
+            value: false,
+            writable: true
+        });
+
+        var ProjectSchema = function() {
+            this.id = {
+                get: function() {
+                    return this.$values.id;
+                },
+                transform: function(json) {
+                    return json.id;
+                }
+            }
+            this.age = {
+                get: function() {
+                    return this.$values.id;
+                },
+                transform: function(json) {
+                    var date = new Date(json.created_at);
+                    var age = 0;
+                    while(date < new Date()) {
+                        age++;
+                        date.setFullYear(date.getFullYear() + 1);
+                    }
+                    return age;
+                }
+            }
+            this.name = {
+                get: function() {
+                    return this.$values.name;
+                },
+                set: function() {
+                    this.$values.name = value;
+                },
+                transform: function(json) {
+                    return json.name;
+                },
+                reverseTransform: function(json) {
+                    json.name = this.name;
+                }
+            }
+        };
+
+        var Project = function() {}
+        Project.prototype = Entity.prototype;
+        Object.defineProperty(Project.prototype, 'id', {
+            get: function() {
+                return this.$values.id;
+            }
+        });
+        Object.defineProperty(Project.prototype, 'name', {
+            set: function(value) {
+                this.$dirty = true;
+                this.$values.name = value;
+            },
+            get: function() {
+                return this.$values.name;
+            }
+        });
+
+
+
+        var project = new Project();
+        project.$values.id = 1;
+        project.$values.name = 'derp';
+        try {
+            project.id = 2;
+        } catch (e) {};
+        console.log(project.id, project.$dirty);
+        project.name = 'test';
+        console.log(project.name, project.$dirty);
+    </script>
+</head>
+<body>
+
+</body>
+</html>
