@@ -13,7 +13,7 @@
             writable: true
         });
 
-        var ProjectSchema = function() {
+        var ProjectSchema = function(projectTypeRepo) {
             this.id = {
                 get: function() {
                     return this.$values.id;
@@ -28,11 +28,13 @@
                 },
                 transform: function(json) {
                     var date = new Date(json.created_at);
-                    var age = 0;
-                    while(date < new Date()) {
-                        age++;
-                        date.setFullYear(date.getFullYear() + 1);
+
+                    var age = (new Date()).getFullYear() - date.getFullYear();
+                    date.setFullYear((new Date()).getFullYear());
+                    if (date > new Date()) {
+                        age--;
                     }
+
                     return age;
                 }
             }
@@ -62,6 +64,22 @@
                 },
                 reverseTransform: function(json) {
                     json.description = this.description;
+                }
+            }
+            this.type = {
+                get: function() {
+                    var cb = function() {
+                        return projectTypeRepo.get(this.$values.type.id);
+                    }
+                },
+                set: function(type) {
+                    this.$values.type = type;
+                },
+                transform: function(json) {
+                    return { id: json.type };
+                },
+                reverseTransform: function(json) {
+                    json.type = this.$values.type.id;
                 }
             }
         };
@@ -189,6 +207,23 @@
 
                 return entity;
             }
+
+            this.getPromise = function(id) {
+                var deferred = $q.defer();
+
+
+
+                return deferred.promise;
+            }
+
+            this.get = function(id) {
+                if (id in instancesById) {
+                    return instancesById[id];
+                }
+
+                // it is loaded from the server
+                return this.initialize({ id: 2, name: 'hi', description: 'bye', created_at: '2008-05-16T00:00:00Z' });
+            }
         }
 
         var repo = new ProjectRepository(rrm);
@@ -207,9 +242,14 @@
         rrm.save(project);
         console.log(project.$dirty);
 
-        repo.update(project, { id: 1, name: 'blep', description: 'herp', created_at: '2010-05-16T00:00:00Z' });
+        repo.update(project, { id: 1, name: 'blep', description: 'herp', created_at: '2010-11-16T00:00:00Z' });
 
         console.log("id: " + project.id + ", name: " + project.name + ', description: '+ project.description +', age:' + project.age);
+
+        var project2 = repo.get(2);
+        console.log("id: " + project2.id + ", name: " + project2.name + ', description: '+ project2.description +', age:' + project2.age);
+
+
     </script>
 </head>
 <body>
