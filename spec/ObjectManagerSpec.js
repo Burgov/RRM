@@ -11,8 +11,8 @@ describe('instantiate new object', function() {
         om.loadSchema(Project, ProjectSchema);
         om.loadSchema(ProjectType, ProjectTypeSchema);
         project = om.create(Project, { id: 10, name: 'Project name', created_at: '2011-05-06T12:00:00Z', type: 8 });
-        project2 = om.create(Project, { id: 11, name: 'Project name', created_at: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
-        project3 = om.create(Project, { id: 12, name: 'Project name', created_at: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
+        project2 = om.create(Project, { id: 11, name: 'Project 11', created_at: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
+        project3 = om.create(Project, { id: 12, name: 'Project 12', created_at: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
     });
 
     it('will map the right value to the right properties', function() {

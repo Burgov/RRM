@@ -43,15 +43,15 @@ var ObjectManager = function() {
         if (entity.id in objectMap[entityClass.$name]) {
             if (!(objectMap[entityClass.$name][entity.id] instanceof Proxy)) {
                 // update the entity data
-                return;
+                return objectMap[entityClass.$name][entity.id];
             }
 
             objectMap[entityClass.$name][entity.id].object = entity;
-            return entity;
+            return objectMap[entityClass.$name][entity.id];
         }
         objectMap[entityClass.$name][entity.id] = entity;
 
-        return entity;
+        return objectMap[entityClass.$name][entity.id];
     };
 
     this.get = function(entityClass, id) {
@@ -78,16 +78,29 @@ var ObjectManager = function() {
         repo.update(entity, data);
     };
 
+    this.getReference = function(entityClass, id) {
+        var reference;
+
+        objectMap[entityClass] = objectMap[entityClass] || {};
+        if (id in objectMap[entityClass]) {
+            reference = objectMap[entityClass][id];
+        } else {
+            reference = this.createProxy(entityClass, id);
+        }
+
+        return reference;
+    }
     this.createProxy = function(entityClass, id) {
         var proxy = new Proxy(self, entityClass, id);
-        objectMap[entityClass] = objectMap[entityClass] || {};
-        objectMap[entityClass][id] = proxy;
+        objectMap[entityClass.$name] = objectMap[entityClass.$name] || {};
+        objectMap[entityClass.$name][id] = proxy;
         return proxy;
     }
 
     this.loadSchema = function(className, schemaClassName) {
 
         className.prototype = Object.create(Entity.prototype);
+        className.prototype.constructor = className;
         className.prototype.$schema = new schemaClassName;
 
         var schema = className.prototype.$schema;

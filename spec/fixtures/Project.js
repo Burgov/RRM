@@ -20,7 +20,9 @@ var ProjectSchema = function() {
     });
 };
 
-var Project = function() {}
+var Project = function() {
+    Entity.call(this);
+}
 Object.defineProperty(Project, '$name', {
     value: 'project'
 });

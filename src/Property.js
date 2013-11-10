@@ -82,7 +82,7 @@ RRM.Relation.ManyToOne = function(name, options) {
             if (json[name] instanceof Object) {
                 return self.om.create(options.entityClass, json[name]);
             } else if (typeof(json[name]) == 'number') {
-                return self.om.createProxy(options.entityClass, json[name]);
+                return self.om.getReference(options.entityClass, json[name]);
             } else {
                 throw Error('Unexpected value');
             }

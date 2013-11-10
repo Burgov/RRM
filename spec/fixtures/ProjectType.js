@@ -3,7 +3,9 @@ var ProjectTypeSchema = function() {
     this.name = new RRM.Property.String('name');
 };
 
-var ProjectType = function() {}
+var ProjectType = function() {
+    Entity.call(this);
+}
 Object.defineProperty(ProjectType, '$name', {
     value: 'project_type'
 });
