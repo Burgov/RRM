@@ -13,76 +13,7 @@
             writable: true
         });
 
-        var ProjectSchema = function(projectTypeRepo) {
-            this.id = {
-                get: function() {
-                    return this.$values.id;
-                },
-                transform: function(json) {
-                    return json.id;
-                }
-            }
-            this.age = {
-                get: function() {
-                    return this.$values.age;
-                },
-                transform: function(json) {
-                    var date = new Date(json.created_at);
 
-                    var age = (new Date()).getFullYear() - date.getFullYear();
-                    date.setFullYear((new Date()).getFullYear());
-                    if (date > new Date()) {
-                        age--;
-                    }
-
-                    return age;
-                }
-            }
-            this.name = {
-                get: function() {
-                    return this.$values.name;
-                },
-                set: function(value) {
-                    this.$values.name = value;
-                },
-                transform: function(json) {
-                    return json.name;
-                },
-                reverseTransform: function(json) {
-                    json.name = this.name;
-                }
-            }
-            this.description = {
-                get: function() {
-                    return this.$values.description;
-                },
-                set: function(value) {
-                    this.$values.description = value;
-                },
-                transform: function(json) {
-                    return json.description;
-                },
-                reverseTransform: function(json) {
-                    json.description = this.description;
-                }
-            }
-            this.type = {
-                get: function() {
-                    var cb = function() {
-                        return projectTypeRepo.get(this.$values.type.id);
-                    }
-                },
-                set: function(type) {
-                    this.$values.type = type;
-                },
-                transform: function(json) {
-                    return { id: json.type };
-                },
-                reverseTransform: function(json) {
-                    json.type = this.$values.type.id;
-                }
-            }
-        };
         var projectSchema = new ProjectSchema();
 
         var Project = function() {}
