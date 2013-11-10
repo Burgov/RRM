@@ -4,5 +4,6 @@ var ProjectTypeSchema = function() {
 };
 
 var ProjectType = function() {}
-ProjectType.prototype = Entity;
-ProjectType.prototype.$schema = new ProjectTypeSchema;
+Object.defineProperty(ProjectType, '$name', {
+    value: 'project_type'
+});

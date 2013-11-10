@@ -15,11 +15,12 @@ var ProjectSchema = function() {
         return age;
     }});
 
-    this.type = new RRM.Property.ManyToOne('type', {
+    this.type = new RRM.Relation.ManyToOne('type', {
         entityClass: ProjectType
     });
 };
 
 var Project = function() {}
-Project.prototype = new Entity();
-Project.prototype.$schema = new ProjectSchema;
+Object.defineProperty(Project, '$name', {
+    value: 'project'
+});

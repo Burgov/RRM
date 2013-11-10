@@ -1,8 +1,26 @@
-var Proxy = function(entityClass, id) {
+var Proxy = function(om, entityClass, id) {
+    this.object = undefined;
+
     var self = this;
 
     this.load = function() {
-        self.object = { id: id, name: "Hello" };
+        if (this.object === undefined) {
+            throw Error('Entity cannot be loaded');
+        }
+    }
+
+    this.addProperty = function(name) {
+        Object.defineProperty(this, name, {
+            get: function() {
+                self.load();
+                return self.object[name];
+            },
+            set: function(value) {
+                self.load();
+                self.object[name] = value;
+            },
+            enumerable: true
+        })
     }
 
     for (var i in entityClass.prototype.$schema) {
@@ -12,17 +30,7 @@ var Proxy = function(entityClass, id) {
             continue;
         }
 
-        Object.defineProperty(this, i, {
-            get: function() {
-                self.load();
-                return self.object[i];
-            },
-            set: function(value) {
-                self.load();
-                self.object[i] = value;
-            },
-            enumerable: true
-        })
+        this.addProperty(i);
     }
 
     Object.defineProperty(this, 'id', {
