@@ -33,7 +33,7 @@ describe('instantiate new object', function() {
     });
 
     it('will load a proxy object if the data of a many2one is unknown', function() {
-        expect(project.type).toBeInstanceOf(Proxy);
+        expect(project.type).toBeDefined(project.type.object);
         expect(project.type.id).toBe(8);
         om.create(ProjectType, { id: 8, name: "Hello" });
         expect(project.type.name).toBe('Hello');
