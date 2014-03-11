@@ -21,3 +21,7 @@ gulp.task('build.min', ['build'], function() {
         .pipe(gulp.dest('build'))
     ;
 });
+
+gulp.task('watch', function() {
+    gulp.watch('src/*.js', ['build']);
+})
