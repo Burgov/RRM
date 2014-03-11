@@ -201,3 +201,19 @@ var product = om.get(Product, 1);
 console.log(product === project.products[0]); // true
 ```
 
+Building and testing
+====================
+In order to test the source code, simply fire up SpecRunner.html in your browser
+
+In order to build the compiled and minified js files, you'll have to use gulp and some of its plugins:
+
+```
+npm install -g gulp
+npm install gulp-concat gulp-rename gulp-uglify
+```
+
+Then:
+
+```
+gulp
+```
