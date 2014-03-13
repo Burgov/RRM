@@ -24,7 +24,7 @@ describe('instantiate new object', function() {
     it('will disallow write access to properties without setter', function() {
         expect(function() {
             project.id = 5;
-        }).toThrow(TypeError("Cannot set property id of [object Object] which has only a getter"));
+        }).toThrow();
         expect(project.id).toBe(10);
     });
 
