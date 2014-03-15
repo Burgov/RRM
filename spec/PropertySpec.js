@@ -57,7 +57,7 @@ describe('date property', function() {
     });
 
     it('will convert the value to a Date object', function() {
-        expect(property.transform("2014-01-01T12:00:00+00:00")).toEqual(new Date(2014, 0, 1, 13, 0, 0));
+        expect(property.transform("2014-01-01T12:00:00+00:00")).toEqual(new Date(Date.UTC(2014, 0, 1, 12, 0, 0)));
     });
 });
 
