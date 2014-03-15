@@ -33,7 +33,7 @@ describe('instantiate new object', function() {
     });
 
     it('will load a proxy object if the data of a many2one is unknown', function() {
-        expect(project.type).toBeDefined(project.type.object);
+        expect(project.type).toBeDefined();
         expect(function() {
             project.type.name;
         }).toThrow(Error("Entity cannot be loaded"));
