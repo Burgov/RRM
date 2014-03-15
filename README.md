@@ -106,7 +106,7 @@ defined. These will be explained below the property list.
 | Option             | Default | Function                                                                                          |
 | ------------------ | ------- | ------------------------------------------------------------------------------------------------- |
 | `readable`         | `true`  | The value can be read                                                                             |
-| `writeable`        | `true`  | The value can be updated                                                                          |
+| `writable`         | `true`  | The value can be updated                                                                          |
 | `loadable`         | `true`  | The value should be loaded from the data passed to `create()`                                     |
 | `persistable`      | `true`  | The value should be returned when calling `toArray()`                                             |
 | `transform`        | ...     | Override this function to change the data as it is loaded from the data and stored in the entity  |
@@ -194,7 +194,8 @@ for (var i = 0; j < productData.length; i < j; i++) {
 console.log(project.products[0].id) // 1
 console.log(project.products[0].name) // "Product 1"
 console.log(project.products[3].id) // 4
-console.log(project.products[3].name) // throws an error
+console.log(project.products[3].name) // throws an error because it was not in the productData array and is therefor
+  // still an unloaded Proxy object
 
 var product = om.get(Product, 1);
 
@@ -203,7 +204,12 @@ console.log(product === project.products[0]); // true
 
 Building and testing
 ====================
-In order to test the source code, simply fire up SpecRunner.html in your browser
+In order to test the source code, simply fire up SpecRunner.html in your browser. To test from the command line using
+phantomjs:
+
+```
+phantomjs spec/initialize/run-jasmine.js SpecRunner.html
+```
 
 In order to build the compiled and minified js files, you'll have to use gulp and some of its plugins:
 
