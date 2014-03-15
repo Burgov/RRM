@@ -1,6 +1,8 @@
 RRM
 ===
 
+[![Build Status](https://travis-ci.org/SamsonIT/RRM.png)](https://travis-ci.org/SamsonIT/RRM)
+
 This library will help you manage relations between entities in JavaScript.
 
 To use, simply include rrm.js in your project and follow these steps:
