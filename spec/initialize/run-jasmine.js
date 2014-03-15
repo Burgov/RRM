@@ -59,33 +59,29 @@ page.open(system.args[1], function(status){
             });
         }, function(){
             var exitCode = page.evaluate(function(){
+                var errorCount = 0;
                 console.log('');
-                console.log(document.body.querySelector('.description').innerText);
-                var list = document.body.querySelectorAll('.results > .summary > .suite > .specSummary');
-                if (list && list.length > 0) {
-                    for (var i = 0; i < list.length; ++i) {
-                        var el = list[i];
+
+                var suiteList = document.body.querySelectorAll('.results > .summary > .suite');
+                for (var i = 0; i < suiteList.length; i++) {
+                    console.log(suiteList[i].querySelector('.description').innerText);
+
+                    var specList = suiteList[i].querySelectorAll('.specSummary');
+                    for (var j = 0; j < specList.length; j++) {
+                        var el = specList[j];
                         var message = el.querySelector('a').innerText;
                         if (el.className.indexOf('failed') > -1) {
+                            errorCount++;
                             console.log('[X] ' + message);
                         } else {
-                            console.log('    ' + message);
+                            console.log('[ ] ' + message);
                         }
                     }
-                }
-                var list = document.body.querySelectorAll('.results > #details > .specDetail.failed');
-                if (list && list.length > 0) {
                     console.log('');
-                    console.log(list.length + ' test(s) FAILED:');
-                    for (var i = 0; i < list.length; ++i) {
-                        var el = list[i],
-                            desc = el.querySelector('.description'),
-                            msg = el.querySelector('.resultMessage.fail');
-                        console.log('');
-                        console.log(desc.innerText);
-                        console.log(msg.innerText);
-                        console.log('');
-                    }
+                }
+
+                if (errorCount) {
+                    console.log(document.body.querySelector('.alert > .failingAlert.bar').innerText);
                     return 1;
                 } else {
                     console.log(document.body.querySelector('.alert > .passingAlert.bar').innerText);
