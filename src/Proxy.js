@@ -1,7 +1,16 @@
+"use strict";
+
 var ProxyFactory = function() {
 
     var proxyClasses = {};
 
+    /**
+     * Create a proxy class for the given entity class. All the properties of entityClass will be added and the Proxy
+     * class will still answer true to instanceof calls for entityClass.
+     *
+     * @param entityClass
+     * @return Proxy
+     */
     var createProxyClass = function(entityClass) {
         var Proxy = function(id) {
             this.object = undefined;
@@ -49,12 +58,12 @@ var ProxyFactory = function() {
         Proxy.prototype = Object.create(entityClass.prototype);
         Proxy.constructor = Proxy;
 
-        proxyClasses[entityClass.$name + 'Proxy'] = Proxy;
+        return Proxy;
     }
 
     this.getProxyClass = function(entityClass) {
         if (!((entityClass.$name + 'Proxy') in proxyClasses)) {
-            createProxyClass(entityClass);
+            proxyClasses[entityClass.$name + 'Proxy'] = createProxyClass(entityClass);
         }
         return proxyClasses[entityClass.$name + 'Proxy'];
     }
