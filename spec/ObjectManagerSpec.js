@@ -8,11 +8,9 @@ describe('instantiate new object', function() {
 
     beforeEach(function() {
         om = new ObjectManager();
-        om.loadSchema(Project, ProjectSchema);
-        om.loadSchema(ProjectType, ProjectTypeSchema);
-        project = om.create(Project, { id: 10, name: 'Project name', created_at: '2011-05-06T12:00:00Z', type: 8 });
-        project2 = om.create(Project, { id: 11, name: 'Project 11', created_at: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
-        project3 = om.create(Project, { id: 12, name: 'Project 12', created_at: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
+        project = om.create(Project, { id: 10, name: 'Project name', createdAt: '2011-05-06T12:00:00Z', type: 8 });
+        project2 = om.create(Project, { id: 11, name: 'Project 11', createdAt: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
+        project3 = om.create(Project, { id: 12, name: 'Project 12', createdAt: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
     });
 
     it('will map the right value to the right properties', function() {
@@ -67,6 +65,22 @@ describe('instantiate new object', function() {
         expect(project.name).toBe('New project name');
         expect(project.type.id).toBe(5);
         expect(project.type.name).toBe('Type 5');
+    });
+
+    it('goes $dirty when a property value changes', function() {
+        expect(project.$dirty).toBe(false);
+        project.name = "test";
+        expect(project.$dirty).toBe(true);
+    });
+
+    it('has a $raw property with original values', function() {
+        project.name = "test";
+        expect(project.$raw['name']).toBe('Project name');
+    });
+
+    it('has a $values property that allows raw data access', function() {
+        project.name = "test";
+        expect(project.$values['name']).toBe('test');
     });
 
 })

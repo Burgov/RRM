@@ -15,8 +15,9 @@ var om = new ObjectManager();
 
 Define your entities
 --------------------
-For every entity you're going to use in your project, you need to define it's schema. Then you need to add this schema
-to the ObjectManager. Here's an example of two schema's with relations to eachother:
+For every entity you're going to use in your project, you need to define it's schema. Then you need to combine the class
+and the schema. The ObjectManager class provides a helper method for that. Here's an example of two schema's with
+relations to each other:
 
 ```javascript
 var ProjectSchema = function() {
@@ -26,34 +27,18 @@ var ProjectSchema = function() {
     this.products = new RRM.Relation.OneToMany('products', { entityClass: Products });
 }
 var Project = function() {
-    Entity.call(this);
 }
-Object.defineProperty(Project, '$name', {
-    value: 'project'
-});
+ObjectManager.prepareEntity('project', Project, ProjectSchema);
 ```
 
 ```javascript
 var ProductSchema = function() {
-    var self = this;
-
     this.id = new RRM.Property.Int('id', { writable: false, persistable: false });
     this.name = new RRM.Property.String('name');
 }
 var Product = function() {
-    Entity.call(this);
-
 }
-Object.defineProperty(Product, '$name', {
-    value: 'product'
-});
-```
-
-And to add the schema's to the ObjectManager:
-
-```javascript
-om.loadSchema(Project, ProjectSchema);
-om.loadSchema(Product, ProductSchema);
+ObjectManager.prepareEntity('product', Product, ProductSchema);
 ```
 
 Load the data

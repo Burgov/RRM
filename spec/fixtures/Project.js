@@ -2,9 +2,16 @@ var ProjectSchema = function() {
     this.id = new RRM.Property.Int('id', { writable: false, persistable: false });
     this.name = new RRM.Property.String('name');
     this.description = new RRM.Property.String('description');
+    this.createdAt = new RRM.Property.Date('createdAt', { writable: false, persistable: false });
+    this.type = new RRM.Relation.ManyToOne('type', { entityClass: ProjectType });
+};
 
-    this.age = new RRM.Property.Int('age', { writable: false, persistable: false, transform: function(json) {
-        var date = new Date(json.created_at);
+var Project = function() {
+}
+
+Object.defineProperty(Project.prototype, 'age', {
+    get: function() {
+        var date = new Date(this.createdAt);
 
         var age = (new Date()).getFullYear() - date.getFullYear();
         date.setFullYear((new Date()).getFullYear());
@@ -13,16 +20,8 @@ var ProjectSchema = function() {
         }
 
         return age;
-    }});
-
-    this.type = new RRM.Relation.ManyToOne('type', {
-        entityClass: ProjectType
-    });
-};
-
-var Project = function() {
-    Entity.call(this);
-}
-Object.defineProperty(Project, '$name', {
-    value: 'project'
+    },
+    enumerable: true
 });
+
+ObjectManager.prepareEntity('project', Project, ProjectSchema);

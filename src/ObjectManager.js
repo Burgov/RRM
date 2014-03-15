@@ -1,3 +1,5 @@
+"use strict";
+
 var ObjectManager = function() {
     this.proxyFactory = new ProxyFactory();
 
@@ -58,15 +60,17 @@ var ObjectManager = function() {
         self.loadPropertyValue(entity, name, property, data);
 
         var definition = {};
-        if ('get' in property) {
+
+        if (property.readable) {
             definition.get = function() {
-                return property.get.call(entity);
+                return entity.$values[name];
             }
         }
-        if ('set' in property) {
+
+        if (property.writable) {
             definition.set = function(value) {
                 entity.$dirty = true;
-                return property.set.call(entity, value);
+                entity.$values[name] = property.transform(value, this);
             }
         }
 
@@ -86,8 +90,7 @@ var ObjectManager = function() {
      */
     this.loadPropertyValue = function(entity, name, property, data) {
         entity.$raw[name] = data[name];
-        var value = property.transform(data);
-        entity.$values[name] = value;
+        entity.$values[name] = property.transform(data[name], this);
     }
 
     /**
@@ -111,14 +114,17 @@ var ObjectManager = function() {
      * @returns entity object (new or existing)
      */
     this.create = function(entityClass, data) {
-        var entity = new entityClass;
+        var entity = Object.create(entityClass.prototype, {
+            $values: { value: {} },
+            $raw: { value: {} },
+            $dirty: { value: false, writable: true }
+        });
 
         data = data || {};
 
         for (var i in entity.$schema) {
             defineProperty(entity, i, entity.$schema[i], data);
         }
-
 
         var existing = getFromObjectMap(entityClass, data.id);
         if (null !== existing) {
@@ -128,10 +134,11 @@ var ObjectManager = function() {
             }
 
             existing.object = entity;
-            existing.initialize(this);
+
+            entityClass.constructor.call(existing);
             return existing;
         }
-        entity.initialize(this);
+        entityClass.constructor.call(entity);
 
         addToObjectMap(entityClass, entity);
         return entity;
@@ -173,7 +180,7 @@ var ObjectManager = function() {
         var data = {};
         for (var i in entity.$schema) {
             if ('reverseTransform' in entity.$schema[i]) {
-                entity.$schema[i].reverseTransform.call(entity, data);
+                data[i] = entity.$schema[i].reverseTransform.call(entity[i], this);
             }
         }
         return data;
@@ -210,24 +217,18 @@ var ObjectManager = function() {
         addToObjectMap(entityClass, proxy);
         return proxy;
     }
-
-    /**
-     * Load the specified schema into the manager
-     *
-     * @param className
-     * @param schemaClassName
-     */
-    this.loadSchema = function(className, schemaClassName) {
-
-        className.prototype = Object.create(Entity.prototype);
-        className.prototype.constructor = className;
-        className.prototype.$schema = new schemaClassName;
-
-        var schema = className.prototype.$schema;
-        for (var i in schema) {
-            if (schema[i] instanceof RRM.Relation.Base) {
-                schema[i].om = self;
-            }
-        }
-    }
 }
+
+/**
+ * Combine the entity class and it's schema and assign the $name property
+ */
+Object.defineProperty(ObjectManager, 'prepareEntity', {
+    value: function(identifier, className, schemaClassName) {
+        Object.defineProperty(className.prototype, '$name', {
+            value: identifier
+        });
+        Object.defineProperty(className.prototype, '$schema', {
+            value: new schemaClassName
+        });
+    }
+});

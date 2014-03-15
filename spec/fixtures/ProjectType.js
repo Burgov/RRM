@@ -4,8 +4,6 @@ var ProjectTypeSchema = function() {
 };
 
 var ProjectType = function() {
-    Entity.call(this);
-}
-Object.defineProperty(ProjectType, '$name', {
-    value: 'project_type'
-});
+};
+
+ObjectManager.prepareEntity('project-type', ProjectType, ProjectTypeSchema);
