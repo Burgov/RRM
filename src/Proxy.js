@@ -1,4 +1,4 @@
-var ProxyFactory = function(om) {
+var ProxyFactory = function() {
 
     var proxyClasses = {};
 

@@ -1,5 +1,5 @@
 var ObjectManager = function() {
-    this.proxyFactory = new ProxyFactory(this);
+    this.proxyFactory = new ProxyFactory();
 
     var self = this;
 
