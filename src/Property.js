@@ -151,16 +151,20 @@ RRM.Relation.ManyToMany.prototype.constructor = RRM.Relation.ManyToMany;
 Object.defineProperties(RRM.Relation.ManyToMany.prototype, {
     transform: {
         value: function(value, om) {
+            var self = this;
+
             return value.map(function(value) {
-                return RRM.Relation.ManyToOne.prototype.transform.call(this, value, om);
-            }.bind(this));
+                return RRM.Relation.ManyToOne.prototype.transform.call(self, value, om);
+            });
         }
     },
     reverseTransform: {
         value: function(value, om) {
+            var self = this;
+
             return value.map(function(value) {
-                return RRM.Relation.ManyToOne.prototype.reverseTransform.call(this, value, om);
-            }.bind(this));
+                return RRM.Relation.ManyToOne.prototype.reverseTransform.call(self, value, om);
+            });
         }
     }
 })
