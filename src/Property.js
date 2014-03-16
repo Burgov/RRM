@@ -9,6 +9,8 @@ RRM.Property.Base = function(name, options) {
 
     this.readable = 'readable' in options ? options.readable : true;
     this.writable = 'writable' in options ? options.writable : true;
+    this.loadable = 'loadable' in options ? options.loadable: true;
+    this.persistable = 'persistable' in options ? options.persistable : true;
 
     if (!('loadable' in options && options.loadable === false)) {
         Object.defineProperty(this, 'transform', {

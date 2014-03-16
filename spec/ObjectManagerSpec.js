@@ -61,7 +61,7 @@ describe('instantiate new object', function() {
     it('will update the data of an already existing entity', function() {
         expect(project.name).toBe('Project name');
         expect(project.type.id).toBe(8);
-        om.create(Project, { id: 10, name: 'New project name', created_at: '2011-05-06T12:00:00Z', type: 5 });
+        om.create(Project, { id: 10, name: 'New project name', createdAt: '2011-05-06T12:00:00Z', type: 5 });
         expect(project.name).toBe('New project name');
         expect(project.type.id).toBe(5);
         expect(project.type.name).toBe('Type 5');
@@ -82,5 +82,13 @@ describe('instantiate new object', function() {
         project.name = "test";
         expect(project.$values['name']).toBe('test');
     });
+
+    it('will convert the project into an object with the many2one relations as in integer', function () {
+        expect(om.toArray(project)).toEqual({
+            name: 'Project name',
+            description: null,
+            type: 8
+        });
+    })
 
 })

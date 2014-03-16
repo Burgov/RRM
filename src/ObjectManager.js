@@ -179,8 +179,8 @@ var ObjectManager = function() {
     this.toArray = function(entity) {
         var data = {};
         for (var i in entity.$schema) {
-            if ('reverseTransform' in entity.$schema[i]) {
-                data[i] = entity.$schema[i].reverseTransform.call(entity[i], this);
+            if (entity.$schema[i].persistable) {
+                data[i] = entity.$schema[i].reverseTransform(entity[i], this);
             }
         }
         return data;
