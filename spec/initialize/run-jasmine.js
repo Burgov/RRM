@@ -81,6 +81,19 @@ page.open(system.args[1], function(status){
                 }
 
                 if (errorCount) {
+                    console.log('Errors:');
+                    console.log('');
+
+                    var errorList = document.body.querySelectorAll('.results > #details > .specDetail.failed');
+                    for (var i = 0; i < errorList.length; i++) {
+                        var el = errorList[i];
+                        console.log(el.querySelector('.description').innerText);
+                        console.log(el.querySelector('.messages > .resultMessage').innerText);
+                        console.log(el.querySelector('.messages > .stackTrace').innerText);
+
+                        console.log('');
+                    }
+
                     console.log(document.body.querySelector('.alert > .failingAlert.bar').innerText);
                     return 1;
                 } else {
