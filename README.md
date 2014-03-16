@@ -90,14 +90,61 @@ defined. These will be explained below the property list.
 
 #### Options
 
-| Option             | Default | Function                                                                                          |
-| ------------------ | ------- | ------------------------------------------------------------------------------------------------- |
-| `readable`         | `true`  | The value can be read                                                                             |
-| `writable`         | `true`  | The value can be updated                                                                          |
-| `loadable`         | `true`  | The value should be loaded from the data passed to `create()`                                     |
-| `persistable`      | `true`  | The value should be returned when calling `toArray()`                                             |
-| `transform`        | ...     | Override this function to change the data as it is loaded from the data and stored in the entity  |
-| `reverseTransform` | ...     | Override this function to change the data as it is loaded from the entity and stored in the array |
+| Option             | Default | Function                                                      |
+| ------------------ | ------- | ------------------------------------------------------------- |
+| `readable`         | `true`  | The value can be read                                         |
+| `writable`         | `true`  | The value can be updated                                      |
+| `loadable`         | `true`  | The value should be loaded from the data passed to `create()` |
+| `persistable`      | `true`  | The value should be returned when calling `toArray()`         |
+
+#### Defining your own property type
+
+Defining your own property type is done by extending one of the existing property types. Let's take the `Int` property
+as an example:
+
+```javascript
+// Int
+RRM.Property.Int = function() {
+    RRM.Property.Base.apply(this, arguments);
+};
+RRM.Property.Int.prototype = Object.create(RRM.Property.Base.prototype);
+RRM.Property.Int.prototype.constructor = RRM.Property.Int;
+```
+
+Don't pay too much attention to these first 5 lines. Just copy them as is and rename them as you wish. If you want to
+know more about what is happening here, read [Introduction to Object-Oriented JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Introduction_to_Object-Oriented_JavaScript)
+
+Now you have a basic property defined, but it doesn't do much interesting yet. It will just pass around the value you
+put into it and fetch from it as-is. If you want to add some magic, define the `transform` and/or `reverseTransform` properties:
+
+```javascript
+Object.defineProperty(RRM.Property.Int.prototype, 'transform', {
+    value: function(value) {
+        return parseInt(RRM.Property.Base.prototype.transform.call(this, value), 10);
+    }
+});
+```
+
+(while it is not really necessary to call the base transform method now, it's good practice to do it still to be ready
+for a BC change in that part.)
+
+Now our `Int` property will make sure any value passed into it is cast into an integer when the entity data is set. The
+`reverseTransform` property functions mainly the same.
+
+You can always call the `transform` or `reverseTransform` method of another property definition by calling for example:
+
+```javascript
+Object.defineProperty(RRM.Property.Int.prototype, 'transform', {
+    value: function(value) {
+        var stringValue = RRM.Property.String.prototype.transform.call(this, value);
+        return parseInt(string, 10);
+    }
+});
+```
+
+Keep in mind: `transform` is called when setting raw data to the entity (both when loading initially and when setting the
+property later on). `reverseTransform` is called for example when you use the `ObjectManager.toArray` method to convert
+the Entity back into a simple object.
 
 ### Relations
 
