@@ -54,7 +54,11 @@ RRM.Property.Int.prototype.constructor = RRM.Property.Int;
 RRM.Property.String = function(name, options) {
     options = options || {};
     options.transform = options.transform || function(value) {
-        return RRM.Property.Base.prototype.transform(value) + "";
+        value = RRM.Property.Base.prototype.transform(value);
+        if (value === undefined || value === null) {
+            return null;
+        }
+        return value + "";
     };
     RRM.Property.Base.call(this, name, options);
 };

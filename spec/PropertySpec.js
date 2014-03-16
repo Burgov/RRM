@@ -41,6 +41,10 @@ describe('string property', function() {
         expect(property.transform(5)).toBe("5");
     });
 
+    it('will convert undefined to null and leave the value alone', function() {
+        expect(property.transform(undefined)).toBe(null);
+    });
+
     it('will give back the value', function() {
         expect(property.reverseTransform("test")).toBe("test");
     })
