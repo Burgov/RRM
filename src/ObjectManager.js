@@ -7,35 +7,45 @@ var ObjectManager = function() {
 
     var objectMap = {};
 
+    var entityClassMap = {};
+
+    /**
+     * Register an already prepared entity class within this instance of the ObjectManager
+     *
+     * @param entityClass
+     */
+    this.register = function(entityClass) {
+        entityClassMap[entityClass.prototype.$name] = entityClass;
+    }
+
     /**
      * Store this entity into the object map for later reference
      *
-     * @param entityClass
+     * @param string entityName
      * @param entity
      */
-    var addToObjectMap = function(entityClass, entity) {
-        var name = entityClass.$name;
-        objectMap[name] = objectMap[name] || [];
-        if (objectMap[name].indexOf(entity) < 0) {
-            objectMap[name].push(entity);
+    var addToObjectMap = function(entityName, entity) {
+        objectMap[entityName] = objectMap[entityName] || [];
+        if (objectMap[entityName].indexOf(entity) < 0) {
+            objectMap[entityName].push(entity);
         }
     }
 
     /**
      * Fetch the references entity from the object map or null if it is not stored.
      *
-     * @param entityClass
+     * @param string entityName
      * @param id
      * @returns entity|null
      */
-    var getFromObjectMap = function(entityClass, id) {
+    var getFromObjectMap = function(entityName, id) {
         if (id === undefined) {
             return null;
         }
-        if (!(entityClass.$name in objectMap)) {
+        if (!(entityName in objectMap)) {
             return null;
         }
-        var map = objectMap[entityClass.$name];
+        var map = objectMap[entityName];
         for (var i in map) {
             if (map[i].id == id) {
                 return map[i];
@@ -70,7 +80,7 @@ var ObjectManager = function() {
         if (property.writable) {
             definition.set = function(value) {
                 entity.$dirty = true;
-                entity.$values[name] = property.transform(value, this);
+                entity.$values[name] = property.transform(value, self);
             }
         }
 
@@ -109,51 +119,62 @@ var ObjectManager = function() {
      * Create an entity with the specified data. If the entity already exists, the data is updated in that entity
      * instead. If the entity already exists as an unloaded Proxy, the Proxy will be loaded with the specified data.
      *
-     * @param entityClass
+     * @param string entityName
      * @param data
-     * @returns entity object (new or existing)
+     * @returns object entity (new or existing)
      */
-    this.create = function(entityClass, data) {
-        var entity = Object.create(entityClass.prototype, {
-            $values: { value: {} },
-            $raw: { value: {} },
-            $dirty: { value: false, writable: true }
-        });
+    this.create = function(entityName, data) {
+        var createEntity = function(doAddToObjectMap) {
+            var entity = Object.create(entityClassMap[entityName].prototype, {
+                $values: { value: {} },
+                $raw: { value: {} },
+                $dirty: { value: false, writable: true }
+            });
 
-        data = data || {};
+            if (doAddToObjectMap) {
+                addToObjectMap(entityName, entity);
+            }
 
-        for (var i in entity.$schema) {
-            defineProperty(entity, i, entity.$schema[i], data);
+            data = data || {};
+
+            for (var i in entity.$schema) {
+                defineProperty(entity, i, entity.$schema[i], data);
+            }
+
+            entityClassMap[entityName].constructor.call(entity);
+
+            return entity;
         }
 
-        var existing = getFromObjectMap(entityClass, data.id);
+        var existing = getFromObjectMap(entityName, data.id);
         if (null !== existing) {
-            if (!(existing instanceof this.proxyFactory.getProxyClass(entityClass))) {
+            if (!(existing instanceof this.proxyFactory.getProxyClass(entityClassMap[entityName]))) {
                 this.update(existing, data);
                 return existing;
             }
 
+            var entity = createEntity(false);
+
             existing.object = entity;
 
-            entityClass.constructor.call(existing);
+            entityClassMap[entityName].constructor.call(existing);
             return existing;
         }
-        entityClass.constructor.call(entity);
+        var entity = createEntity(true);
 
-        addToObjectMap(entityClass, entity);
         return entity;
     };
 
     /**
      * Fetch an entity by ID
      *
-     * @param entityClass
+     * @param string entityName
      * @param id
      * @throws Error if the entity is not loaded or proxied
      * @returns {entity|null}
      */
-    this.get = function(entityClass, id) {
-        var entity = getFromObjectMap(entityClass, id);
+    this.get = function(entityName, id) {
+        var entity = getFromObjectMap(entityName, id);
         if (null === entity) {
             throw Error('not loaded');
         }
@@ -164,11 +185,11 @@ var ObjectManager = function() {
     /**
      * Fetch all entities of the specified class
      *
-     * @param entityClass
+     * @param string entityName
      * @returns Object of entities mapped by ID
      */
-    this.getAll = function(entityClass) {
-        return objectMap[entityClass.$name] || {};
+    this.getAll = function(entityName) {
+        return objectMap[entityName] || {};
     }
 
     /**
@@ -190,16 +211,16 @@ var ObjectManager = function() {
      * Does the same as this.get(), but instead of throwing an Error, it will create a Proxy object if the entity is
      * not loaded.
      *
-     * @param entityClass
+     * @param string entityName
      * @param id
      * @returns entity
      */
-    this.getReference = function(entityClass, id) {
+    this.getReference = function(entityName, id) {
         var reference;
 
-        reference = getFromObjectMap(entityClass, id);
+        reference = getFromObjectMap(entityName, id);
         if (null === reference) {
-            reference = this.createProxy(entityClass, id);
+            reference = this.createProxy(entityName, id);
         }
 
         return reference;
@@ -208,13 +229,13 @@ var ObjectManager = function() {
     /**
      * Create a new Proxy for the specified entity class and ID
      *
-     * @param entityClass
+     * @param string entityName
      * @param id
      * @returns Proxy
      */
-    this.createProxy = function(entityClass, id) {
-        var proxy = this.proxyFactory.createProxy(entityClass, id);
-        addToObjectMap(entityClass, proxy);
+    this.createProxy = function(entityName, id) {
+        var proxy = this.proxyFactory.createProxy(entityClassMap[entityName], id);
+        addToObjectMap(entityName, proxy);
         return proxy;
     }
 }

@@ -8,9 +8,12 @@ describe('instantiate new object', function() {
 
     beforeEach(function() {
         om = new ObjectManager();
-        project = om.create(Project, { id: 10, name: 'Project name', createdAt: '2011-05-06T12:00:00Z', type: 8 });
-        project2 = om.create(Project, { id: 11, name: 'Project 11', createdAt: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
-        project3 = om.create(Project, { id: 12, name: 'Project 12', createdAt: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
+        om.register(Project);
+        om.register(ProjectType);
+        om.register(Product);
+        project = om.create('project', { id: 10, name: 'Project name', createdAt: '2011-05-06T12:00:00Z', type: 8 });
+        project2 = om.create('project', { id: 11, name: 'Project 11', createdAt: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
+        project3 = om.create('project', { id: 12, name: 'Project 12', createdAt: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
     });
 
     it('will map the right value to the right properties', function() {
@@ -36,13 +39,13 @@ describe('instantiate new object', function() {
             project.type.name;
         }).toThrow(Error("Entity cannot be loaded"));
         expect(project.type.id).toBe(8);
-        om.create(ProjectType, { id: 8, name: "Hello" });
+        om.create('project-type', { id: 8, name: "Hello" });
         expect(project.type.name).toBe('Hello');
     });
 
     it('will throw an error on trying to fetch an unloaded entity', function() {
         expect(function() {
-            om.get(Project, 100);
+            om.get('project', 100);
         }).toThrow(Error("not loaded"));
     });
 
@@ -61,7 +64,7 @@ describe('instantiate new object', function() {
     it('will update the data of an already existing entity', function() {
         expect(project.name).toBe('Project name');
         expect(project.type.id).toBe(8);
-        om.create(Project, { id: 10, name: 'New project name', createdAt: '2011-05-06T12:00:00Z', type: 5 });
+        om.create('project', { id: 10, name: 'New project name', createdAt: '2011-05-06T12:00:00Z', type: 5 });
         expect(project.name).toBe('New project name');
         expect(project.type.id).toBe(5);
         expect(project.type.name).toBe('Type 5');
