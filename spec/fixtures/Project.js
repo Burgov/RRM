@@ -4,6 +4,7 @@ var ProjectSchema = function() {
     this.description = new RRM.Property.String('description');
     this.createdAt = new RRM.Property.Date('createdAt', { writable: false, persistable: false });
     this.type = new RRM.Relation.ManyToOne('type', { entityClass: 'project-type' });
+    this.products = new RRM.Relation.OneToMany('product', { entityClass: 'product', backReference: 'project' });
 };
 
 var Project = function() {

@@ -285,6 +285,17 @@ describe('one to many relation', function() {
         expect(om.getReference).toHaveBeenCalledWith(ProjectType, 6);
     });
 
+    it('sets the property referenced with "backReference" to the current entity', function() {
+        var project = {};
+
+        property = new RRM.Relation.OneToMany("relation", { entityClass: Product, backReference: 'project' });
+        var data = [ { id: 5, name: 'test' } ];
+
+        var result = property.transform(data, om, project);
+
+        expect(result[0].project).toBe(project);
+    })
+
     it('converts back into an ID', function() {
         var data = [ new ProjectType, new ProjectType ];
         property.reverseTransform(data, om);

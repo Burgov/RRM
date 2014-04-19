@@ -26,7 +26,7 @@ var ProjectSchema = function() {
     this.id = new RRM.Property.Int('id', { writable: false, persistable: false });
     this.start = new RRM.Property.Date('start', { writable: false, persistable: false });
     this.name = new RRM.Property.String('name');
-    this.products = new RRM.Relation.OneToMany('products', { entityClass: Products });
+    this.products = new RRM.Relation.OneToMany('products', { entityClass: Products, backReference: 'project' });
 }
 var Project = function() {
 }
@@ -153,6 +153,16 @@ These are pretty self explanatory, so here's a simple list of supported relation
 `RRM.Relation.OneToMany`, `RRM.Relation.ManyToOne`, `RRM.Relation.OneToOne`, `RRM.Relation.ManyToMany`
 
 These all support the same options as the simple properties.
+
+The only relation to have a special option is `RRM.Relation.OneToMany`. It supports a `backReference` which you can use
+to tell RRM to populate that specific property of the other side of the relation with an instance the instance itself.
+
+Basically it makes the following example possible, given the mapping and data examples from the top of this documentation:
+
+```javascript
+var project = om.create(Project, data);
+console.log(project === project.products[0].project); // true
+```
 
 Storing data into the ObjectManager
 ===================================

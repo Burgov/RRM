@@ -80,7 +80,7 @@ var ObjectManager = function() {
         if (property.writable) {
             definition.set = function(value) {
                 entity.$dirty = true;
-                entity.$values[name] = property.transform(value, self);
+                entity.$values[name] = property.transform(value, self, entity);
             }
         }
 
@@ -100,7 +100,7 @@ var ObjectManager = function() {
      */
     this.loadPropertyValue = function(entity, name, property, data) {
         entity.$raw[name] = data[name];
-        entity.$values[name] = property.transform(data[name], this);
+        entity.$values[name] = property.transform(data[name], this, entity);
     }
 
     /**

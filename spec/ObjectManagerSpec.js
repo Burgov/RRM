@@ -90,8 +90,37 @@ describe('instantiate new object', function() {
         expect(om.toArray(project)).toEqual({
             name: 'Project name',
             description: null,
-            type: 8
+            type: 8,
+            products: []
         });
+    })
+
+    it('will inject both sides of a one2many relation', function() {
+        var projectWithProducts = om.create('project', {
+            'id': 1,
+            'name': 'test with products',
+            'products': [
+                {
+                    id: 1,
+                    name: 'product 1'
+                }, {
+                    id: 2,
+                    name: 'product 2'
+                }
+            ]
+        })
+
+        expect(projectWithProducts.products[0].project).toBe(projectWithProducts);
+    })
+
+    it('will inject both sides of a one2many relation when the to-many is a proxy', function() {
+        var projectWithProducts = om.create('project', {
+            'id': 1,
+            'name': 'test with products',
+            'products': [ 1, 2 ]
+        });
+
+        expect(projectWithProducts.products[0].project).toBe(projectWithProducts);
     })
 
 })

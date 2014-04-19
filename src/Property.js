@@ -172,12 +172,13 @@ Object.defineProperties(RRM.Relation.ManyToMany.prototype, {
 // OneToMany
 RRM.Relation.OneToMany = function(name, options) {
     RRM.Relation.Base.apply(this, arguments);
+    this.backReference = options.backReference || null;
 }
 RRM.Relation.OneToMany.prototype = Object.create(RRM.Relation.Base.prototype);
 RRM.Relation.OneToMany.prototype.constructor = RRM.Relation.OneToMany;
 Object.defineProperties(RRM.Relation.OneToMany.prototype, {
     transform: {
-        value: function(value, om) {
+        value: function(value, om, entity) {
             var data = [];
             for (var i in value) {
                 var reference;
@@ -187,14 +188,19 @@ Object.defineProperties(RRM.Relation.OneToMany.prototype, {
                     reference = om.getReference(this.entityClass, value[i]);
                 }
                 data.push(reference);
+
+                if (this.backReference) {
+                    reference[this.backReference] = entity;
+                }
             }
+
             return data;
         }
     },
     reverseTransform: {
         value: function(value, om) {
             return value.map(function(value) {
-                om.toArray(value)
+                return om.toArray(value)
             });
         }
     }
