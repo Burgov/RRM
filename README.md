@@ -238,8 +238,14 @@ console.log(product === project.products[0]); // true
 
 Building and testing
 ====================
-In order to test the source code, simply fire up SpecRunner.html in your browser. To test from the command line using
-phantomjs:
+In order to test the source code, first prepare the dev files using gulp:
+
+```
+gulp dev
+```
+
+Then, simply fire up SpecRunner.html (a new file should have appeared in the project root directory, _not_ the one in
+the spec directory) in your browser. To test from the command line using phantomjs:
 
 ```
 phantomjs spec/initialize/run-jasmine.js SpecRunner.html

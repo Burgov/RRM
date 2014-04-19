@@ -1,7 +1,13 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat')
     uglify = require('gulp-uglify')
-    rename = require('gulp-rename');
+    rename = require('gulp-rename')
+    inject = require('gulp-inject')
+;
+
+var paths = {
+    scripts: ['src/*.js', 'src/*/*.js', 'spec/*.js', 'spec/fixtures/ProjectType.js', 'spec/fixtures/Project.js']
+}
 
 gulp.task('default', function() {
     return gulp.start('build.min');
@@ -22,6 +28,14 @@ gulp.task('build.min', ['build'], function() {
     ;
 });
 
+gulp.task('dev', function() {
+    var files = gulp.src(paths.scripts);
+
+    return gulp.src('spec/SpecRunner.html')
+        .pipe(inject(files, { addRootSlash: false }))
+        .pipe(gulp.dest('.'))
+});
+
 gulp.task('watch', function() {
-    gulp.watch('src/*.js', ['build']);
-})
+    gulp.watch(paths.scripts, ['dev']);
+});
