@@ -89,7 +89,10 @@ page.open(system.args[1], function(status){
                         var el = errorList[i];
                         console.log(el.querySelector('.description').innerText);
                         console.log(el.querySelector('.messages > .resultMessage').innerText);
-                        console.log(el.querySelector('.messages > .stackTrace').innerText);
+                        var stackTraceNode = el.querySelector('.messages > .stackTrace');
+                        if (stackTraceNode) {
+                            console.log(stackTraceNode.innerText);
+                        }
 
                         console.log('');
                     }
