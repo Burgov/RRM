@@ -138,4 +138,13 @@ describe('instantiate new object', function() {
         }).toThrow(Error("The property 'name' was not initialized"));
     })
 
+    it('allows for the proxy factory to be overridden', function() {
+        var MockProxyFactory = jasmine.createSpyObj(ProxyFactory, [ 'createProxy' ]);
+        var om = new ObjectManager(MockProxyFactory);
+
+        om.register(Project);
+
+        om.getReference('project', 10);
+        expect(MockProxyFactory.createProxy).toHaveBeenCalledWith(Project, 10);
+    });
 })

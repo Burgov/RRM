@@ -1,7 +1,7 @@
 "use strict";
 
-var ObjectManager = function() {
-    this.proxyFactory = new ProxyFactory();
+var ObjectManager = function(proxyFactory) {
+    this.proxyFactory = proxyFactory || new ProxyFactory;
 
     var self = this;
 
