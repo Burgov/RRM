@@ -17,6 +17,10 @@ var ProxyFactory = function() {
 
             var self = this;
 
+            this.isLoaded = function() {
+                return this.object !== undefined;
+            }
+
             this.load = function() {
                 if (this.object === undefined) {
                     throw Error('Entity cannot be loaded');

@@ -252,7 +252,7 @@ describe('one to many relation', function() {
     beforeEach(function() {
         mockType = {};
 
-        om = jasmine.createSpyObj(ObjectManager, [ 'create', 'getReference', 'toArray' ]);
+        om = jasmine.createSpyObj(ObjectManager, [ 'create', 'getReference', 'toArray', 'setPropertyValue' ]);
         om.create.andCallFake(function() {
             return mockType;
         });
@@ -291,9 +291,9 @@ describe('one to many relation', function() {
         property = new RRM.Relation.OneToMany("relation", { entityClass: Product, backReference: 'project' });
         var data = [ { id: 5, name: 'test' } ];
 
-        var result = property.transform(data, om, project);
+        property.transform(data, om, project);
 
-        expect(result[0].project).toBe(project);
+        expect(om.setPropertyValue).toHaveBeenCalledWith(testObject, 'project', project);
     })
 
     it('converts back into an ID', function() {

@@ -59,26 +59,31 @@ var ObjectManager = function() {
      *
      * @param entity
      * @param name
-     * @param property
-     * @param data the value
      */
-    var defineProperty = function(entity, name, property, data) {
+    var defineProperty = function(entity, name) {
+        var property = entity.$schema[name];
         if (!('transform' in property)) {
             throw Error('transform is mandatory');
         }
-
-        self.loadPropertyValue(entity, name, property, data);
 
         var definition = {};
 
         if (property.readable) {
             definition.get = function() {
+                if (!(name in entity.$values)) {
+                    throw new Error("The property '"+name+"' was not initialized");
+                }
+
                 return entity.$values[name];
             }
         }
 
         if (property.writable) {
             definition.set = function(value) {
+                if (!(name in entity.$values)) {
+                    throw new Error("The property '"+name+"' was not initialized");
+                }
+
                 entity.$dirty = true;
                 entity.$values[name] = property.transform(value, self, entity);
             }
@@ -95,12 +100,29 @@ var ObjectManager = function() {
      *
      * @param entity
      * @param name
-     * @param property
-     * @param data
+     * @param value
      */
-    this.loadPropertyValue = function(entity, name, property, data) {
-        entity.$raw[name] = data[name];
-        entity.$values[name] = property.transform(data[name], this, entity);
+    this.loadPropertyValue = function(entity, name, value) {
+        var property = entity.$schema[name];
+
+        entity.$raw[name] = value;
+        this.setPropertyValue(entity, name, property.transform(value, this, entity));
+    }
+
+    /**
+     * To prevent a call to the transform of the property, this method can be used to directly inject the value into
+     * the entity (use with caution. If something unfit for the property is injected, problems may come later)
+     *
+     * @param entity
+     * @param name
+     * @param value
+     */
+    this.setPropertyValue = function(entity, name, value) {
+        if (this.isProxy(entity) && !entity.isLoaded()) {
+            entity[name] = value;
+            return;
+        }
+        entity.$values[name] = value;
     }
 
     /**
@@ -111,8 +133,23 @@ var ObjectManager = function() {
      */
     this.update = function(existing, data) {
         for (var i in existing.$schema) {
-            self.loadPropertyValue(existing, i, existing.$schema[i], data);
+            delete existing.$raw[i];
+            delete existing.$values[i];
         }
+
+        for (var i in data) {
+            self.loadPropertyValue(existing, i, data[i]);
+        }
+    }
+
+    /**
+     * Check to see if an entity is actually a proxy
+     *
+     * @param entity
+     * @returns boolean
+     */
+    this.isProxy = function(entity) {
+        return entity instanceof self.proxyFactory.getProxyClass(entityClassMap[entity.$name]);
     }
 
     /**
@@ -138,7 +175,11 @@ var ObjectManager = function() {
             data = data || {};
 
             for (var i in entity.$schema) {
-                defineProperty(entity, i, entity.$schema[i], data);
+                defineProperty(entity, i);
+            }
+
+            for (var i in data) {
+                self.loadPropertyValue(entity, i, data[i]);
             }
 
             entityClassMap[entityName].constructor.call(entity);
@@ -148,7 +189,7 @@ var ObjectManager = function() {
 
         var existing = getFromObjectMap(entityName, data.id);
         if (null !== existing) {
-            if (!(existing instanceof this.proxyFactory.getProxyClass(entityClassMap[entityName]))) {
+            if (!(this.isProxy(existing))) {
                 this.update(existing, data);
                 return existing;
             }
@@ -199,11 +240,27 @@ var ObjectManager = function() {
      */
     this.toArray = function(entity) {
         var data = {};
+
+        var unitializedProperties = [];
+
         for (var i in entity.$schema) {
             if (entity.$schema[i].persistable) {
-                data[i] = entity.$schema[i].reverseTransform(entity[i], this);
+                try {
+                    data[i] = entity.$schema[i].reverseTransform(entity[i], this);
+                } catch (e) {
+                    if (e.message == "The property '"+i+"' was not initialized") {
+                        unitializedProperties.push(i);
+                    } else {
+                        throw e;
+                    }
+                }
             }
         }
+
+        if (unitializedProperties.length) {
+            throw new Error('Cannot call toArray() on an entity that is not fully initialized. Uninitialized properties: ' + unitializedProperties.join(", "));
+        }
+
         return data;
     }
 

@@ -190,7 +190,7 @@ Object.defineProperties(RRM.Relation.OneToMany.prototype, {
                 data.push(reference);
 
                 if (this.backReference) {
-                    reference[this.backReference] = entity;
+                    om.setPropertyValue(reference, this.backReference, entity);
                 }
             }
 
