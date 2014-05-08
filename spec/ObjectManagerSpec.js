@@ -86,7 +86,7 @@ describe('instantiate new object', function() {
         expect(project.$values['name']).toBe('test');
     });
 
-    it('will convert the project into an object with the many2one relations as in integer', function () {
+    it('will convert the project into an object with the many2one relations as an integer', function () {
         expect(om.toArray(project)).toEqual({
             name: 'Project name',
             description: null,
