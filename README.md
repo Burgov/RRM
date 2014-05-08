@@ -155,7 +155,7 @@ These are pretty self explanatory, so here's a simple list of supported relation
 These all support the same options as the simple properties.
 
 The only relation to have a special option is `RRM.Relation.OneToMany`. It supports a `backReference` which you can use
-to tell RRM to populate that specific property of the other side of the relation with an instance the instance itself.
+to tell RRM to populate that specific property of the other side of the relation with the reference itself.
 
 Basically it makes the following example possible, given the mapping and data examples from the top of this documentation:
 
