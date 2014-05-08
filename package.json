@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/SamsonIT/RRM/issues"
   },
-  "homepage": "https://github.com/SamsonIT/RRM"
+  "homepage": "https://github.com/SamsonIT/RRM",
+  "devDependencies": {
+    "gulp-concat": "^2.2.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^0.2.1"
+  }
 }
