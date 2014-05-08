@@ -1,13 +1,12 @@
 var gulp = require('gulp'),
-    concat = require('gulp-concat')
-    uglify = require('gulp-uglify')
-    rename = require('gulp-rename')
-    inject = require('gulp-inject')
-;
+    concat = require('gulp-concat'),
+    uglify = require('gulp-uglify'),
+    rename = require('gulp-rename'),
+    inject = require('gulp-inject');
 
 var paths = {
     scripts: ['src/**/*.js', 'spec/*.js', 'spec/fixtures/*.js', 'spec/fixtures/Project.js']
-}
+};
 
 gulp.task('default', function() {
     return gulp.start('build.min');
