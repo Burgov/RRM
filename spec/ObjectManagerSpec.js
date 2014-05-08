@@ -147,4 +147,4 @@ describe('instantiate new object', function() {
         om.getReference('project', 10);
         expect(MockProxyFactory.createProxy).toHaveBeenCalledWith(Project, 10);
     });
-})
+});
