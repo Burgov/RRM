@@ -1,0 +1,23 @@
+{
+  "name": "RRM",
+  "version": "2.2.0",
+  "homepage": "https://github.com/SamsonIT/RRM",
+  "authors": [
+    "SamsonIT"
+  ],
+  "description": "Manage relations between entities in JavaScript",
+  "main": "src/ObjectManager.js",
+  "keywords": [
+    "orm"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "spec",
+    "lib",
+    "tests"
+  ]
+}
