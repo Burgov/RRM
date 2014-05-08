@@ -93,7 +93,7 @@ describe('instantiate new object', function() {
             type: 8,
             products: []
         });
-    })
+    });
 
     it('will inject both sides of a one2many relation', function() {
         var projectWithProducts = om.create('project', {
@@ -111,7 +111,7 @@ describe('instantiate new object', function() {
         })
 
         expect(projectWithProducts.products[0].project).toBe(projectWithProducts);
-    })
+    });
 
     it('will inject both sides of a one2many relation when the to-many is a proxy', function() {
         var projectWithProducts = om.create('project', {
@@ -121,7 +121,7 @@ describe('instantiate new object', function() {
         });
 
         expect(projectWithProducts.products[0].project).toBe(projectWithProducts);
-    })
+    });
 
     it('will throw an error on accessing non-initialized properties', function() {
         var project = om.create('project', {
@@ -136,7 +136,7 @@ describe('instantiate new object', function() {
         expect(function() {
             project.name = 'test';
         }).toThrow(Error("The property 'name' was not initialized"));
-    })
+    });
 
     it('allows for the proxy factory to be overridden', function() {
         var MockProxyFactory = jasmine.createSpyObj(ProxyFactory, [ 'createProxy' ]);
