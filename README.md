@@ -26,7 +26,7 @@ var ProjectSchema = function() {
     this.id = new RRM.Property.Int('id', { writable: false, persistable: false });
     this.start = new RRM.Property.Date('start', { writable: false, persistable: false });
     this.name = new RRM.Property.String('name');
-    this.products = new RRM.Relation.OneToMany('products', { entityClass: Products, backReference: 'project' });
+    this.products = new RRM.Relation.OneToMany('products', { entityClass: 'product', backReference: 'project' });
 }
 var Project = function() {
 }
