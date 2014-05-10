@@ -146,6 +146,17 @@ Keep in mind: `transform` is called when setting raw data to the entity (both wh
 property later on). `reverseTransform` is called for example when you use the `ObjectManager.toArray` method to convert
 the Entity back into a simple object.
 
+### Defining what property to use as "identifier"
+
+By default, RRM will assume there is a property called `id`, and will use it as identifier. You can override this by defining
+an `id` property on the schema constructor:
+
+```javascript
+Object.defineProperty(ProjectSchema, 'id', { value: 'name' });
+```
+
+Now the `name` property will be used to identify the projects.
+
 ### Relations
 
 These are pretty self explanatory, so here's a simple list of supported relations:

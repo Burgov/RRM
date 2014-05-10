@@ -11,6 +11,8 @@ describe('instantiate new object', function() {
         om.register(Project);
         om.register(ProjectType);
         om.register(Product);
+        om.register(Test);
+
         var createdAt = new Date();
         createdAt.setFullYear(createdAt.getFullYear() - 2);
         createdAt = createdAt.toISOString();
@@ -151,9 +153,15 @@ describe('instantiate new object', function() {
         om.getReference('project', 10);
         expect(MockProxyFactory.createProxy).toHaveBeenCalledWith(Project, 10);
     });
+
     it('will simply skip a property it doesn\'t know when loading', function() {
         om.create('project', { test: 'test' });
 
         // if we got here and got no error, everything is OK.
+    })
+
+    it('allows defining another property as ID', function() {
+        var test = om.create('test', { testId: 5 });
+        expect(om.get('test', 5)).toBe(test);
     })
 });
