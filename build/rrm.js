@@ -46,12 +46,9 @@ var ObjectManager = function(proxyFactory) {
             return null;
         }
 
-        var schemaConstructor = entityClassMap[entityName].prototype.$schema.constructor;
-        var idProperty = 'id' in schemaConstructor ? schemaConstructor.id : 'id';
-
         var map = objectMap[entityName];
         for (var i in map) {
-            if (map[i][idProperty] == id) {
+            if (map[i][ObjectManager.getIdProperty(entityClassMap[entityName])] == id) {
                 return map[i];
             }
         }
@@ -195,7 +192,7 @@ var ObjectManager = function(proxyFactory) {
             return entity;
         }
 
-        var existing = getFromObjectMap(entityName, data.id);
+        var existing = getFromObjectMap(entityName, data[ObjectManager.getIdProperty(entityClassMap[entityName])]);
         if (null !== existing) {
             if (!(this.isProxy(existing))) {
                 this.update(existing, data);
@@ -319,6 +316,10 @@ Object.defineProperty(ObjectManager, 'prepareEntity', {
     }
 });
 
+Object.defineProperty(ObjectManager, 'getIdProperty', { value: function(entityClass) {
+    var schemaConstructor = entityClass.prototype.$schema.constructor;
+    return 'id' in schemaConstructor ? schemaConstructor.id : 'id';
+} });
 "use strict";
 
 var RRM = RRM || {};
@@ -592,15 +593,17 @@ var ProxyFactory = function() {
                 })
             }
 
+            var idProperty = ObjectManager.getIdProperty(entityClass);
+
             for (var i in entityClass.prototype.$schema) {
-                if (i == 'id') {
+                if (i == idProperty) {
                     continue;
                 }
 
                 this.addProperty(i);
             }
 
-            Object.defineProperty(this, 'id', {
+            Object.defineProperty(this, idProperty, {
                 get: function() {
                     return id;
                 },
