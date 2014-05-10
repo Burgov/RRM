@@ -45,9 +45,13 @@ var ObjectManager = function(proxyFactory) {
         if (!(entityName in objectMap)) {
             return null;
         }
+
+        var schemaConstructor = entityClassMap[entityName].prototype.$schema.constructor;
+        var idProperty = 'id' in schemaConstructor ? schemaConstructor.id : 'id';
+
         var map = objectMap[entityName];
         for (var i in map) {
-            if (map[i].id == id) {
+            if (map[i][idProperty] == id) {
                 return map[i];
             }
         }
@@ -104,6 +108,10 @@ var ObjectManager = function(proxyFactory) {
      */
     this.loadPropertyValue = function(entity, name, value) {
         var property = entity.$schema[name];
+
+        if (property === undefined) {
+            return;
+        }
 
         entity.$raw[name] = value;
         this.setPropertyValue(entity, name, property.transform(value, this, entity));
