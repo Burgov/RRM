@@ -41,15 +41,17 @@ var ProxyFactory = function() {
                 })
             }
 
+            var idProperty = ObjectManager.getIdProperty(entityClass);
+
             for (var i in entityClass.prototype.$schema) {
-                if (i == 'id') {
+                if (i == idProperty) {
                     continue;
                 }
 
                 this.addProperty(i);
             }
 
-            Object.defineProperty(this, 'id', {
+            Object.defineProperty(this, idProperty, {
                 get: function() {
                     return id;
                 },
