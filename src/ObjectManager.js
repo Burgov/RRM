@@ -105,6 +105,10 @@ var ObjectManager = function(proxyFactory) {
     this.loadPropertyValue = function(entity, name, value) {
         var property = entity.$schema[name];
 
+        if (property === undefined) {
+            return;
+        }
+
         entity.$raw[name] = value;
         this.setPropertyValue(entity, name, property.transform(value, this, entity));
     }

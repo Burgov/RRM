@@ -151,4 +151,9 @@ describe('instantiate new object', function() {
         om.getReference('project', 10);
         expect(MockProxyFactory.createProxy).toHaveBeenCalledWith(Project, 10);
     });
+    it('will simply skip a property it doesn\'t know when loading', function() {
+        om.create('project', { test: 'test' });
+
+        // if we got here and got no error, everything is OK.
+    })
 });
