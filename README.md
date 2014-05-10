@@ -64,7 +64,7 @@ var data = {
   ]
 }
 
-var project = om.create(Project, data);
+var project = om.create('project', data);
 ```
 
 Usage details
@@ -160,7 +160,7 @@ to tell RRM to populate that specific property of the other side of the relation
 Basically it makes the following example possible, given the mapping and data examples from the top of this documentation:
 
 ```javascript
-var project = om.create(Project, data);
+var project = om.create('project', data);
 console.log(project === project.products[0].project); // true
 ```
 
@@ -170,10 +170,10 @@ As shown above you can store data into the ObjectManager using the `create()` me
 the ObjectManager, it will update that instance with the new data:
 
 ```javascript
-var product = om.create(Project, { id: 7, name: 'test' });
+var product = om.create('project', { id: 7, name: 'test' });
 console.log(project.name); // "test"
 
-om.create(Project, { id: 7, name: 'other test' });
+om.create('project', { id: 7, name: 'other test' });
 console.log(project.name); // "other test"
 ```
 
@@ -183,17 +183,17 @@ You can fetch your data from the ObjectManager using either the `get()` method o
 one will fail if the object is not loaded yet, the second will create a Proxy object for you (see below).
 
 ```javascript
-var project = om.get(Project, 1); // Project entity
-var project2 = om.get(Project, 2); // throws an error
+var project = om.get('project', 1); // Project entity
+var project2 = om.get('project', 2); // throws an error
 
-var project = om.getReference(Project, 1); // The same Project entity
-var project2 = om.getReference(Project, 2); // A Proxy object for Project with ID 2
+var project = om.getReference('project', 1); // The same Project entity
+var project2 = om.getReference('project', 2); // A Proxy object for Project with ID 2
 ```
 
 Using the `getAll()` method you can fetch all the loaded entities of a specific class;
 
 ```javascript
-var projects = om.getAll(Project);
+var projects = om.getAll('project');
 ```
 
 Working with proxies
@@ -210,7 +210,7 @@ var data = {
   products: [ 1, 2, 3, 4, 5, 6 ]
 }
 
-var project = om.create(Project, data);
+var project = om.create('project', data);
 ```
 
 Now, when you try to access a property of one of the Products, you will get an error. However, you do have access to the
@@ -241,7 +241,7 @@ console.log(project.products[3].id) // 4
 console.log(project.products[3].name) // throws an error because it was not in the productData array and is therefor
   // still an unloaded Proxy object
 
-var product = om.get(Product, 1);
+var product = om.get('project', 1);
 
 console.log(product === project.products[0]); // true
 ```
