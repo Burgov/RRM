@@ -11,9 +11,13 @@ describe('instantiate new object', function() {
         om.register(Project);
         om.register(ProjectType);
         om.register(Product);
-        project = om.create('project', { id: 10, name: 'Project name', createdAt: '2011-05-06T12:00:00Z', description: null, type: 8, products: [] });
-        project2 = om.create('project', { id: 11, name: 'Project 11', createdAt: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
-        project3 = om.create('project', { id: 12, name: 'Project 12', createdAt: '2011-05-06T12:00:00Z', type: { id: 5, name: 'Type 5' } });
+        var createdAt = new Date();
+        createdAt.setFullYear(createdAt.getFullYear() - 2);
+        createdAt = createdAt.toISOString();
+
+        project = om.create('project', { id: 10, name: 'Project name', createdAt: createdAt, description: null, type: 8, products: [] });
+        project2 = om.create('project', { id: 11, name: 'Project 11', createdAt: createdAt, type: { id: 5, name: 'Type 5' } });
+        project3 = om.create('project', { id: 12, name: 'Project 12', createdAt: createdAt, type: { id: 5, name: 'Type 5' } });
     });
 
     it('will map the right value to the right properties', function() {
