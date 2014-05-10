@@ -1,0 +1,27 @@
+{
+  "name": "RRM",
+  "version": "2.2.0",
+  "description": "Manage relations between entities in JavaScript",
+  "main": "build/rrm.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SamsonIT/RRM.git"
+  },
+  "keywords": [
+    "orm"
+  ],
+  "author": "SamsonIT",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SamsonIT/RRM/issues"
+  },
+  "homepage": "https://github.com/SamsonIT/RRM",
+  "devDependencies": {
+    "gulp-concat": "^2.2.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^0.2.1"
+  }
+}
