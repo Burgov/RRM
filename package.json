@@ -8,17 +8,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SamsonIT/RRM.git"
+    "url": "https://github.com/Burgov/RRM.git"
   },
   "keywords": [
     "orm"
   ],
-  "author": "SamsonIT",
+  "author": "Burgov Web Development",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/SamsonIT/RRM/issues"
+    "url": "https://github.com/Burgov/RRM/issues"
   },
-  "homepage": "https://github.com/SamsonIT/RRM",
+  "homepage": "https://github.com/Burgov/RRM",
   "devDependencies": {
     "gulp-concat": "^2.2.0",
     "gulp-rename": "^1.2.0",

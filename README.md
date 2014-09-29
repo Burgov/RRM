@@ -1,7 +1,7 @@
 RRM
 ===
 
-[![Build Status](https://travis-ci.org/SamsonIT/RRM.png)](https://travis-ci.org/SamsonIT/RRM)
+[![Build Status](https://travis-ci.org/Burgov/RRM.png)](https://travis-ci.org/Burgov/RRM)
 
 This library will help you manage relations between entities in JavaScript.
 

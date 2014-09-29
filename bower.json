@@ -1,9 +1,9 @@
 {
   "name": "RRM",
   "version": "2.2.2",
-  "homepage": "https://github.com/SamsonIT/RRM",
+  "homepage": "https://github.com/Burgov/RRM",
   "authors": [
-    "SamsonIT"
+    "Burgov Web Development"
   ],
   "description": "Manage relations between entities in JavaScript",
   "main": "src/ObjectManager.js",
