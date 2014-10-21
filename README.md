@@ -217,6 +217,14 @@ Every entity is automatically populated with some internal properties.
     `toArray` is callede on the entity.
   * $writeCounter: whenever a property is updated, be it by RRM or by other code, this counter is raised by 1.
 
+Hooks
+=====
+You can define hooks on your entity object. These hooks will be called during the lifetime of an entity. Just define
+them as functions on your object prototype or in it's constructor:
+
+  * `$postCreate`: after the entity is created and loaded with data using `om.create()`, this function is called
+  * `$postUpdate`: after the entity is updated using `om.create()`, this function is called
+
 Working with proxies
 ====================
 In the example above we are loading the whole schema (Project and its Products) at once, but this might not always be

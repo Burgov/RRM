@@ -8,7 +8,15 @@ var ProjectSchema = function() {
 };
 
 var Project = function() {
-}
+    this.postCreateCalled = false;
+    this.postUpdateCalled = false;
+};
+Project.prototype.$postCreate = function() {
+    this.postCreateCalled = true;
+};
+Project.prototype.$postUpdate = function() {
+    this.postUpdateCalled = true;
+};
 
 Object.defineProperty(Project.prototype, 'age', {
     get: function() {

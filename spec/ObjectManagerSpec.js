@@ -173,4 +173,12 @@ describe('instantiate new object', function() {
         project.description = 'description';
         expect(project.$writeCounter).toBe(9);
     })
+
+    it('calls postCreate and postUpdate if they\'re defined', function() {
+        expect(project.postCreateCalled).toBe(true);
+        expect(project.postUpdateCalled).toBe(false);
+        om.create('project', { id: 10, name: 'something' });
+        expect(project.postCreateCalled).toBe(true);
+        expect(project.postUpdateCalled).toBe(true);
+    });
 });

@@ -192,6 +192,10 @@ var ObjectManager = function(proxyFactory) {
 
             entityClassMap[entityName].constructor.call(entity);
 
+            if ('$postCreate' in entity) {
+                entity.$postCreate();
+            }
+
             return entity;
         }
 
@@ -199,6 +203,11 @@ var ObjectManager = function(proxyFactory) {
         if (null !== existing) {
             if (!(this.isProxy(existing))) {
                 this.update(existing, data);
+
+                if ('$postUpdate' in existing) {
+                    existing.$postUpdate();
+                }
+
                 return existing;
             }
 
