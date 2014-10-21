@@ -190,7 +190,7 @@ var ObjectManager = function(proxyFactory) {
                 self.loadPropertyValue(entity, i, data[i]);
             }
 
-            entityClassMap[entityName].constructor.call(entity);
+            entityClassMap[entityName].prototype.constructor.call(entity);
 
             if ('$postCreate' in entity) {
                 entity.$postCreate();
