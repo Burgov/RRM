@@ -215,7 +215,6 @@ var ObjectManager = function(proxyFactory) {
 
             existing.object = entity;
 
-            entityClassMap[entityName].constructor.call(existing);
             return existing;
         }
         var entity = createEntity(true);
