@@ -87,6 +87,7 @@ var ObjectManager = function(proxyFactory) {
 
                 entity.$dirty = true;
                 entity.$values[name] = property.transform(value, self, entity);
+                entity.$writeCounter++;
             }
         }
 
@@ -111,6 +112,8 @@ var ObjectManager = function(proxyFactory) {
         }
 
         entity.$raw[name] = value;
+        entity.$writeCounter = entity.$writeCounter || 0;
+        entity.$writeCounter++;
         this.setPropertyValue(entity, name, property.transform(value, this, entity));
     }
 

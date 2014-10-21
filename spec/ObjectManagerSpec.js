@@ -164,4 +164,13 @@ describe('instantiate new object', function() {
         var test = om.create('test', { testId: 5 });
         expect(om.get('test', 5)).toBe(test);
     })
+
+    it('will update the write counter on any write access', function() {
+        expect(project.$writeCounter).toBe(6);
+        project.name = 'new name';
+        expect(project.$writeCounter).toBe(7);
+        project.name = 'new new name';
+        project.description = 'description';
+        expect(project.$writeCounter).toBe(9);
+    })
 });

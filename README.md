@@ -207,6 +207,16 @@ Using the `getAll()` method you can fetch all the loaded entities of a specific 
 var projects = om.getAll('project');
 ```
 
+Internal properties
+===================
+Every entity is automatically populated with some internal properties.
+
+  * $raw: this contains the raw, unprocessed data that was fed to RRM.
+  * $values: all the processed values accessible without touching getters and setters.
+  * $dirty: whenever a property is updated by other code than RRM, this is set to true. It is reset to `false` when
+    `toArray` is callede on the entity.
+  * $writeCounter: whenever a property is updated, be it by RRM or by other code, this counter is raised by 1.
+
 Working with proxies
 ====================
 In the example above we are loading the whole schema (Project and its Products) at once, but this might not always be
