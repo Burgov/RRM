@@ -74,7 +74,7 @@ Defining properties
 -------------------
 
 As you can see above, we're defining various properties on the Project and Product entities. There are quite some
-predefined property definitions which all have their own funcionality. Also, some properties have additional options
+predefined property definitions which all have their own functionality. Also, some properties have additional options
 defined. These will be explained below the property list.
 
 ### Properties
