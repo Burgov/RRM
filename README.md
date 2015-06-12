@@ -214,7 +214,7 @@ Every entity is automatically populated with some internal properties.
   * `$raw`: this contains the raw, unprocessed data that was fed to RRM.
   * `$values`: all the processed values accessible without touching getters and setters.
   * `$dirty`: whenever a property is updated by other code than RRM, this is set to true. It is reset to `false` when
-    `toArray` is callede on the entity.
+    `toArray` is called on the entity.
   * `$writeCounter`: whenever a property is updated, be it by RRM or by other code, this counter is raised by 1.
 
 Hooks
